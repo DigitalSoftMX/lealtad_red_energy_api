@@ -22,9 +22,10 @@ class JWTMiddleware
             // Valida que el token sea igual al remember token proporcionado por el login
             $user = JWTAuth::parseToken()->authenticate();
             if ($user->remember_token == $token) {
-                if ($user->roles[0]->name == 'despachador' && $user->active == 0) {
+                // if ($user->roles[0]->name == 'despachador' && $user->active == 0) {
+                if ($user->active == 0) {
                     JWTAuth::invalidate(JWTAuth::parseToken($token));
-                    return $this->exceptionResponse('Usuario no autorizado');
+                    return $this->exceptionResponse('Usuario no autorizado o activo');
                 }
                 return $next($request);
             }

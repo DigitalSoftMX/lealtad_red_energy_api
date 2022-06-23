@@ -1,9 +1,7 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\User;
-// use App\ToCopy\Permission;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model

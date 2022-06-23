@@ -15,28 +15,24 @@ class CreateStationTable extends Migration
     {
         Schema::create('station', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('address');
-            $table->string('phone');
-            $table->string('email');
+            $table->String('name');
+            $table->String('abrev');
+            $table->String('address');
+            $table->String('phone');
+            $table->String('email');
             $table->integer('total_timbres')->nullable();
             $table->integer('total_facturas')->nullable();
-            $table->unsignedBigInteger('id_empresa');
-            $table->unsignedBigInteger('id_type')->nullable();
-            $table->string('number_station', 5);
+            $table->unsignedBigInteger('id_company');
+            $table->String('number_station', 5);
             $table->integer('active')->nullable();
             $table->boolean('lealtad');
-            $table->string('dns')->nullable();
+            $table->String('dns')->nullable();
             $table->timestamp('fail')->nullable();
-            $table->string('ip')->nullable();
-            $table->string('image');
+            $table->String('ip')->nullable();
+            $table->String('image');
             $table->timestamps();
 
-            $table->foreign('id_empresa')->references('id')->on('empresas')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-
-            $table->foreign('id_type')->references('id')->on('cat_type')
+            $table->foreign('id_company')->references('id')->on('companies')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

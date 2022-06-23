@@ -1,12 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    protected $fillable = ['user_id', 'current_balance', 'shared_balance', 'points', 'visits', 'image', 'birthdate', 'ids'];
+    protected $fillable = [
+        'user_id',
+        'points',
+        'image',
+        'birthdate',
+        'ids'//Campo necesario para enviar notificaciones por cliente
+    ];
     // Relacion con el usuario
     public function user()
     {
@@ -32,11 +38,7 @@ class Client extends Model
     {
         return $this->hasMany(Contact::class, 'transmitter_id', 'id');
     }
-    // Relacion con el tipo de vehiculo
-    public function car()
-    {
-        return $this->hasOne(DataCar::class);
-    }
+
     // Relacion con los pagos que ha realizado
     public function payments()
     {

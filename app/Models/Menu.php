@@ -1,12 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
     public function roles(){
-        return $this->belongsToMany('App\Role');
+        return $this->belongsToMany(Role::class);
     }
 }

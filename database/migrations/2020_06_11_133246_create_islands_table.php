@@ -20,9 +20,9 @@ class CreateIslandsTable extends Migration
             $table->integer('bomb');
             $table->timestamps();
 
-            $table->foreign('station_id')->references('id')->on('station')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // $table->foreign('station_id')->references('id')->on('station')
+            //     ->onDelete('cascade')
+            //     ->onUpdate('cascade');
         });
     }
 

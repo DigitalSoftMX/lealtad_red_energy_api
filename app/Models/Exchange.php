@@ -1,13 +1,22 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\Api\Status;
+use App\Models\Status;
 use Illuminate\Database\Eloquent\Model;
 
 class Exchange extends Model
 {
-    protected $fillable = ['client_id', 'exchange', 'station_id', 'points', 'value', 'status', 'admin_id', 'reference'];
+    protected $fillable = [
+        'client_id',
+        'exchange',
+        'station_id',
+        'points',
+        'value',
+        'status',
+        'admin_id',
+        'reference'
+    ];
     // Relacion con las estaciones
     public function station()
     {

@@ -1,0 +1,44 @@
+[
+    {
+        "name": "Pendiente"
+    },
+    {
+        "name": "Autorizado"
+    },
+    {
+        "name": "Denegado"
+    },
+    {
+        "name": "Disponible"
+    },
+    {
+        "name": "Compartido"
+    },
+    {
+        "name": "Iniciado"
+    },
+    {
+        "name": "Pausado"
+    },
+    {
+        "name": "Terminado"
+    },
+    {
+        "name": "inmediato"
+    },
+    {
+        "name": "prolongado"
+    },
+    {
+        "name": "Proceso"
+    },
+    {
+        "name": "Entrega"
+    },
+    {
+        "name": "Cobro"
+    },
+    {
+        "name": "Historial"
+    }
+]

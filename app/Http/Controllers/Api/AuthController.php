@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Canje;
-use App\Client;
-use App\DataCar;
-use App\Empresa;
-use App\Exchange;
-use App\Gasoline;
-use App\History;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Lealtad\Tarjeta;
-use App\Lealtad\Ticket;
-use App\Repositories\ResponsesAndLogout;
-use App\SalesQr;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use App\Station;
-use App\User;
-use Carbon\Carbon;
-use Exception;
-use Google_Client;
 use Illuminate\Support\Facades\Storage;
-use SimpleXMLElement;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use SimpleXMLElement;
+use Carbon\Carbon;
+use Google_Client;//Google register y login
+use Exception;
+use App\Repositories\ResponsesAndLogout;//
+
+// use App\User;
+use App\Models\Client;
+use App\Models\Company;
+use App\Models\Exchange;
+use App\Models\Station;
+use App\Models\Gasoline;
+use App\Models\History;
+use App\Canje; //Eliminar
+use App\SalesQr;//Eliminar
+
+use App\Models\User;
+use App\Role;
 
 class AuthController extends Controller
 {
@@ -61,13 +63,11 @@ class AuthController extends Controller
                     return $this->response->errorResponse('Intente iniciar sesión con su cuenta de google');
 
                 foreach ($user->first()->roles as $rol) {
-                    if ($rol->id == 4 || $rol->id == 5) {
+                    if ($rol->name == 'usuario') {
                         $validator = Validator::make($request->only('email'), ['email' => 'email']);
                         return ($validator->fails()) ?
-                            $this->response->errorResponse(
-                                'Por favor, ingrese un nuevo correo electrónico.',
-                                $user[0]->id
-                            ) : $this->getToken($request, $user[0], $rol->id);
+                            $this->response->errorResponse('Por favor, ingrese un nuevo correo electrónico.',$user[0]->id
+                            ) : $this->getToken($request, $user[0], $rol->name);
                     }
                 }
                 return $this->response->errorResponse('Usuario no autorizado', null);
@@ -86,7 +86,7 @@ class AuthController extends Controller
 
             if ($user) {
                 $request->merge(['email' => $user->email, 'password' => $user->username]);
-                return $this->getToken($request, $user, 5);
+                return $this->getToken($request, $user, 'usuario');
             }
 
             return $this->response->errorResponse('El usuario no ha sido registrado anteriormente');
@@ -109,20 +109,20 @@ class AuthController extends Controller
                     if (!(User::where('username', $membership)->exists()))
                         break;
                 }
-            
+
                 $request->merge([
                     'username' => $membership, 'external_id' => $userGoogle['sub'],
                     'email' => $userGoogle['email'], 'name' => $userGoogle['given_name'],
                     'first_surname' => $userGoogle['family_name'], 'password' => bcrypt($membership)
                 ]);
-            
+
                 $user = User::create($request->all());
-                $request->merge(['user_id' => $user->id, 'points' => Empresa::find(1)->points, 'image' => $membership]);
+                $request->merge(['user_id' => $user->id, 'points' => Company::find(1)->points, 'image' => $membership]);
                 Client::create($request->all());
                 $user->roles()->attach('5');
                 Storage::disk('public')->deleteDirectory($user->username);
                 $request->merge(['password' => $membership]);
-                return $this->getToken($request, $user, 5);
+                return $this->getToken($request, $user, 'usuario');
             }
 
             return $this->response->errorResponse('Ya existe un usuario con el correo electrónico');
@@ -135,33 +135,34 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name'          => 'required|string',
             'first_surname' => 'required|string',
-            'email' => ['required', 'email', Rule::unique((new User)->getTable())],
-            'password' => 'required|string|min:6',
-            'number_plate' => $request->number_plate ? [Rule::unique((new DataCar())->getTable())] : '',
+            'email'         => ['required', 'email', Rule::unique((new User())->getTable())],
+            'password'      => 'required|string|min:6',
         ]);
         if ($validator->fails())
             return $this->response->errorResponse($validator->errors(), null);
-        // Membresia aleatoria no repetible
+        // ****CONSERVAR****// Membresia aleatoria no repetible
         while (true) {
             $membership = 'E' . substr(Carbon::now()->format('Y'), 2) . rand(100000, 999999);
             if (!(User::where('username', $membership)->exists()))
                 break;
         }
-        $password = $request->password;
+        //Crear Usuario con username menbresia y encriptar password
         $request->merge(['username' => $membership, 'password' => bcrypt($request->password)]);
+        error_log('Crea user');
         $user = User::create($request->all());
-        $request->merge(['user_id' => $user->id, 'points' => Empresa::find(1)->points, 'image' => $membership]);
-        Client::create($request->all());
-        $user->roles()->attach('5');
-        if ($request->number_plate != "" || $request->type_car != "") {
-            $request->merge(['client_id' => $user->client->id]);
-            DataCar::create($request->only(['client_id', 'number_plate', 'type_car']));
+        if ($user) {
+            //Obtener id role ya que no es 5 siempre
+            $role = Role::where('name','=','usuario')->first();
+            $user->roles()->attach($role->id);//Asignar role 5 al usuario
+            //Creacion del cliente
+            $request->merge(['user_id' => $user->id, 'points' => Company::find(1)->points, 'image' => $membership]);
+            Client::create($request->all());
         }
-        Storage::disk('public')->deleteDirectory($user->username);
-        $request->merge(['password' => $password]);
-        return $this->getToken($request, $user, 5);
+        // Storage::disk('public')->deleteDirectory($user->username);
+        $request->merge(['password' => $request->password]);//Pasar el password sin encriptar
+        return $this->getToken($request, $user, 'usuario');
     }
     // Método para actualizar solo el correo eletrónico de un usuario
     public function updateEmail(Request $request)
@@ -194,70 +195,27 @@ class AuthController extends Controller
     {
         if (!$token = JWTAuth::attempt($request->only('email', 'password')))
             return $this->response->errorResponse('Datos incorrectos', null);
+
         $user->update(['remember_token' => $token]);
-        if ($rol == 5) {
+
+        if ($rol == 'usuario') {
+            //User relacion con cliente no esta vacio llenar
             if ($user->client == null) {
-                $request->merge(['user_id' => $user->id, 'current_balance' => 0, 'shared_balance' => 0, 'points' => 0, 'image' => $user->username, 'visits' => 0, 'acive' => 0]);
+                $request->merge([
+                    'user_id' => $user->id,
+                    'points' => 0,
+                    'image' => $user->username,
+                    'acive' => 0
+                ]);
                 $user->client = Client::create($request->except('ids'));
                 $user->client->save();
-            }
-            if ($user->client->ids == null) {
-                if (count($dataPoints = Tarjeta::where('number_usuario', $user->username)->get()) > 0) {
-                    $user->client->points += $dataPoints->sum('totals');
-                    $user->client->visits += $dataPoints->sum('visits');
-                    // $user->client->update(['points' => $dataPoints->sum('totals'), 'visits' => $dataPoints->sum('visits')]);
-                    $user->client->save();
-                    foreach ($dataPoints as $dataPoint) {
-                        $dataPoint->delete();
-                    }
-                }
-                $this->ticketsToSalesQRs(Ticket::where([['number_usuario', $user->username], ['descrip', 'LIKE', '%puntos sumados%']])->get(), 1, $user->client->id);
-                $this->ticketsToSalesQRs(Ticket::where([['number_usuario', $user->username], ['descrip', 'LIKE', '%Puntos Dobles Sumados%']])->get(), 2, $user->client->id);
-                $this->ticketsToSalesQRs(Ticket::where([['number_usuario', $user->username], ['descrip', 'LIKE', '%Información errónea%']])->get(), 3, $user->client->id);
-                $this->ticketsToSalesQRs(Ticket::where([['number_usuario', $user->username], ['descrip', 'LIKE', '%pendiente%']])->get(), 4, $user->client->id);
-                $this->ticketsToSalesQRs(Ticket::where('number_usuario', $user->username)->get(), 5, null);
-                foreach (History::where('number_usuario', $user->username)->get() as $history) {
-                    try {
-                        $dataHistoryExchange = new Exchange();
-                        $dataHistoryExchange->client_id = $user->client->id;
-                        $dataHistoryExchange->exchange = $history->numero;
-                        $dataHistoryExchange->station_id = $history->id_station;
-                        $dataHistoryExchange->points = $history->points;
-                        $dataHistoryExchange->value = $history->value;
-                        $dataHistoryExchange->status = 14;
-                        $dataHistoryExchange->admin_id = $history->id_admin;
-                        $dataHistoryExchange->created_at = $history->created_at;
-                        $dataHistoryExchange->updated_at = $history->updated_at;
-                        $dataHistoryExchange->save();
-                    } catch (Exception $e) {
-                    }
-                    $history->delete();
-                }
-                foreach (Canje::where('number_usuario', $user->username)->get() as $canje) {
-                    try {
-                        if (!(Exchange::where('exchange', $canje->conta)->exists())) {
-                            $dataExchange = new Exchange();
-                            $dataExchange->client_id = $user->client->id;
-                            $dataExchange->exchange = $canje->conta;
-                            $dataExchange->station_id = $canje->id_estacion;
-                            $dataExchange->points = $canje->punto;
-                            $dataExchange->value = $canje->value;
-                            $dataExchange->status = $canje->estado + 10;
-                            $dataExchange->created_at = $canje->created_at;
-                            $dataExchange->updated_at = $canje->updated_at;
-                            $dataExchange->save();
-                        }
-                    } catch (Exception $e) {
-                    }
-                    $canje->delete();
-                }
             }
             $user->client->update($request->only('ids'));
         }
         return $this->successReponse('token', $token);
     }
     // Metodo para copiar el historial de Tickets a SalesQR
-    private function ticketsToSalesQRs($tickets, $status, $id)
+    /* private function ticketsToSalesQRs($tickets, $status, $id)
     {
         foreach ($tickets as $ticket) {
             if ($status != 5) {
@@ -286,7 +244,7 @@ class AuthController extends Controller
             }
             $ticket->delete();
         }
-    }
+    } */
     // Metodo para actualizar la ip de una estacion
     public function uploadIPStation($station_id, Request $request)
     {

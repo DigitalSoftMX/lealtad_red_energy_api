@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\Web\Island;
+use App\Models\Web\Island;
 use Illuminate\Database\Eloquent\Model;
 
 class Station extends Model
@@ -10,17 +10,29 @@ class Station extends Model
     /* Accediendo a la tabla station */
     protected $table = 'station';
 
-    protected $fillable = ['ip', 'fail'];
+    protected $fillable = [
+        'name',
+        'abrev',
+        'address',
+        'phone',
+        'email',
+        'total_timbres',
+        'total_facturas',
+        'id_company',
+        'number_station',
+        'active',
+        'lealtad',
+        'dns',
+        'ip',
+        'fail',
+        'image',
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    // Relacion con los horarios de la estacion
-    public function schedules()
-    {
-        return $this->hasMany(Schedule::class);
-    }
+
     // Relacino con las islas y bombas de la estacion
     public function islands()
     {
