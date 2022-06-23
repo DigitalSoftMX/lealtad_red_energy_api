@@ -24,6 +24,9 @@ class CreateCompaniesTable extends Migration
             $table->integer('double_points',);
             $table->String('terms_and_conditions')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
