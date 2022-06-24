@@ -15,4 +15,12 @@ class Category extends Model
         'name',
         'description'
     ];
+
+    /**
+     * La función product() devuelve todos los productos que pertenecen a una categoría
+     * @return A collection of products
+     */
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
 }

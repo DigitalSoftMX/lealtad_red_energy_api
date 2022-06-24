@@ -14,4 +14,11 @@ class Unit extends Model
     protected $fillable = [
         'name'
     ];
+
+    /**
+     * > The `products()` function returns all the products that belong to the unit
+     */
+    public function products(){
+        $this->hasMany(Product::class);
+    }
 }
