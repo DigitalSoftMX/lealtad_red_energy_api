@@ -15,30 +15,25 @@ class CreateExchangesTable extends Migration
     {
         Schema::create('exchanges', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('client_id');
-            $table->integer('exchange');
-            $table->unsignedBigInteger('station_id');
             $table->integer('points');
             $table->double('value');
-            $table->unsignedBigInteger('status');
-            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('station_id');
+            $table->unsignedBigInteger('user_by')->nullable();
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('clients')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('station_id')->references('id')->on('station')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->foreign('station_id')->references('id')->on('stations')
+                ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('status')->references('id')->on('status')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->foreign('status_id')->references('id')->on('status')
+                ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('admin_id')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->foreign('user_by')->references('id')->on('users')
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

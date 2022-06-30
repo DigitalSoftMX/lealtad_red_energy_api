@@ -18,7 +18,7 @@ class CreateSaleClientsTable extends Migration
             $table->unsignedBigInteger('sale_id');
             $table->unsignedBigInteger('client_id');
 
-            $table->foreign('sale_id')->references('id')->on('users')
+            $table->foreign('sale_id')->references('id')->on('salesqrs')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
@@ -35,6 +35,6 @@ class CreateSaleClientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sale_clients');
+        // Schema::dropIfExists('sale_clients');
     }
 }

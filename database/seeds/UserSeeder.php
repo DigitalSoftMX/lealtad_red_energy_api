@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,20 @@ class UserSeeder extends Seeder
             'remember_token'=> NULL,
             'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([ 'user_id' => $user->id, 'role_id' => 1 ]);
+        DB::table('role_user')->insert([
+            'user_id' => $user->id, 'role_id' => 1
+        ]);
+        $client = Client::create([
+            'user_id'   => $user->id,
+            'points'    => 1000,
+            'image'     => NULL,
+            'birthdate' => '1994-05-10',
+            'active'    => 0,
+            'ids'       => NULL,
+        ]);
+        DB::table('user_client')->insert([
+            'user_id'=>$user->id,'client_id'=>$client->id
+        ]);
         $user = User::create([
             'name'          => 'Administrador',
             'first_surname' => 'Eucomb',
@@ -42,7 +56,20 @@ class UserSeeder extends Seeder
             'remember_token'=> NULL,
             'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([ 'user_id' => $user->id, 'role_id' => 2 ]);
+        DB::table('role_user')->insert([
+            'user_id' => $user->id, 'role_id' => 2
+        ]);
+        $client = Client::create([
+            'user_id'   => $user->id,
+            'points'    => 1000,
+            'image'     => NULL,
+            'birthdate' => '1994-05-10',
+            'active'    => 0,
+            'ids'       => NULL,
+        ]);
+        DB::table('user_client')->insert([
+            'user_id'=>$user->id,'client_id'=>$client->id
+        ]);
         $user = User::create([
             'name'          => 'admin_estacion',
             'first_surname' => 'estacion',
@@ -57,8 +84,20 @@ class UserSeeder extends Seeder
             'remember_token'=> NULL,
             'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([ 'user_id' => $user->id, 'role_id' => 3 ]);
-
+        DB::table('role_user')->insert([
+            'user_id' => $user->id, 'role_id' => 3
+        ]);
+        $client = Client::create([
+            'user_id'   => $user->id,
+            'points'    => 1000,
+            'image'     => NULL,
+            'birthdate' => '1994-05-10',
+            'active'    => 0,
+            'ids'       => NULL,
+        ]);
+        DB::table('user_client')->insert([
+            'user_id'=>$user->id,'client_id'=>$client->id
+        ]);
         $user = User::create([
             'name'          => 'enrique',
             'first_surname' => 'perez',
@@ -73,8 +112,20 @@ class UserSeeder extends Seeder
             'remember_token'=> NULL,
             'external_id'   => NULL,
         ]);
-
-        DB::table('role_user')->insert([ 'user_id' => $user->id, 'role_id' => 4 ]);
+        DB::table('role_user')->insert([
+            'user_id' => $user->id, 'role_id' => 4
+        ]);
+        $client = Client::create([
+            'user_id'   => $user->id,
+            'points'    => 1000,
+            'image'     => NULL,
+            'birthdate' => '1994-05-10',
+            'active'    => 0,
+            'ids'       => NULL,
+        ]);
+        DB::table('user_client')->insert([
+            'user_id'=>$user->id,'client_id'=>$client->id
+        ]);
         // print_r(json_encode($user));
     }
 

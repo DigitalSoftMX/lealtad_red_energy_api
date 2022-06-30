@@ -6,7 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalesQr extends Model
 {
-    protected $fillable = ['sale', 'gasoline_id', 'liters', 'points', 'payment', 'station_id', 'client_id', 'no_bomb', 'main_id', 'reference'];
+    protected $table = 'salesqrs';
+
+    protected $fillable = [
+        'tiket_id',
+        'product_id',
+        'cant',
+        'points',
+        'payment',
+        'station_id',
+        'client_id',
+        'main_id',
+        'reference'
+    ];
     // Relacion con la estacion
     public function station()
     {

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Station extends Model
 {
     /* Accediendo a la tabla station */
-    protected $table = 'station';
+    protected $table = 'stations';
 
     protected $fillable = [
         'name',

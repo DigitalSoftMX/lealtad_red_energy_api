@@ -8,14 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Exchange extends Model
 {
     protected $fillable = [
-        'client_id',
-        'exchange',
-        'station_id',
         'points',
         'value',
-        'status',
-        'admin_id',
-        'reference'
+        'status_id',
+        'client_id',
+        'station_id',
+        'user_by',//Quien crea el canje
     ];
     // Relacion con las estaciones
     public function station()

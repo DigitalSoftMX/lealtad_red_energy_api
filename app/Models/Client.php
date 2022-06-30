@@ -11,7 +11,8 @@ class Client extends Model
         'points',
         'image',
         'birthdate',
-        'ids'//Campo necesario para enviar notificaciones por cliente
+        'active',
+        'ids'//Campo enviar notificacion por cliente
     ];
     // Relacion con el usuario
     public function user()
@@ -24,20 +25,20 @@ class Client extends Model
         return $this->hasMany(Deposit::class);
     }
     // Relacion con los depositos compartidos
-    public function depositReceived()
-    {
-        return $this->hasMany(SharedBalance::class, 'receiver_id', 'id');
-    }
+    // public function depositReceived()
+    // {
+    //     return $this->hasMany(SharedBalance::class, 'receiver_id', 'id');
+    // }
     // Relacion para los depositos realizados por el cliente
-    public function historyDeposits()
-    {
-        return $this->belongsTo(Deposit::class);
-    }
+    // public function historyDeposits()
+    // {
+    //     return $this->belongsTo(Deposit::class);
+    // }
     // Relacion para los contactos del cliente
-    public function contacts()
+    /* public function contacts()
     {
         return $this->hasMany(Contact::class, 'transmitter_id', 'id');
-    }
+    } */
 
     // Relacion con los pagos que ha realizado
     public function payments()

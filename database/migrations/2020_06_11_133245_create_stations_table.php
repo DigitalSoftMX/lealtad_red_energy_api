@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStationTable extends Migration
+class CreateStationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateStationTable extends Migration
      */
     public function up()
     {
-        Schema::create('station', function (Blueprint $table) {
+        Schema::create('stations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->String('name');
             $table->String('abrev');
