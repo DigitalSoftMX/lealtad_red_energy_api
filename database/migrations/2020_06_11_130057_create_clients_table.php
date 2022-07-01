@@ -15,18 +15,17 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
+            $table->string('membership',15);
             $table->integer('points');
-            // $table->integer('visits')->default(0);
             $table->string('image')->nullable();
-            $table->string('birthdate')->nullable();
-            $table->integer('active')->default(0);
-            $table->string('ids')->nullable();//campo enviar notificacion por cliente
+            $table->String('address')->nullable();
+            $table->enum('active',['ACTIVE','LOCKED'])->default('ACTIVE');
+            $table->unsignedBigInteger('user_id');
+            $table->string('ids')->nullable();//enviar notificacion por cliente
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

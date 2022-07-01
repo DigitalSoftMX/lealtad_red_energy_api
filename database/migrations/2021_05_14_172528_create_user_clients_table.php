@@ -19,12 +19,10 @@ class CreateUserClientsTable extends Migration
             $table->unsignedBigInteger('client_id');
 
             $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('cascade');
 
             $table->foreign('client_id')->references('id')->on('clients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

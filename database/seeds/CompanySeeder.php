@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -19,7 +20,7 @@ class CompanySeeder extends Seeder
             'address'               => 'Zona alta de Tehuacán',
             'phone'                 => '2222222222',
             'image'                 => NULL,
-            'user_id'               => User::where('username','LIKE','%admin_eucomb%')->first()->id,
+            'user_id'               => Client::where('membership','LIKE','%adminMaster%')->first()->id,
             'points'                => 100,
             'double_points'         => 1,
             'terms_and_conditions'  => NULL

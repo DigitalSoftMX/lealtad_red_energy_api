@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Models\Client;
+use App\Models\Role;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,17 +27,12 @@ class User extends Authenticatable implements JWTSubject
     // Relacion a muchos para el rol del usuario
     public function roles()
     {
-        return $this->belongsToMany('App\Role');
+        return $this->belongsToMany(Role::class);
     }
     // Relacion usuario cliente
     public function client()
     {
         return $this->hasOne(Client::class);
-    }
-    // Relacion usuario despachador
-    public function dispatcher()
-    {
-        return $this->hasOne(Dispatcher::class);
     }
     // funcion que pregunta si el rol esta autorizado para la web
     public function authorizeRoles($roles)
@@ -82,8 +79,18 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'first_surname', 'second_surname', 'email', 'sex', 'phone', 'address', 'active',
-        'password', 'remember_token', 'external_id'
+        'name',
+        'first_surname',
+        'second_surname',
+        'email',
+        'sex',
+        'phone',
+        'birthday',
+        'job',//Puesto de trabajo
+        'active',
+        'external_id',//Login google
+        'password',
+        'remember_token',
     ];
 
     /**

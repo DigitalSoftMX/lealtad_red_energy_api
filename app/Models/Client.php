@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     protected $fillable = [
-        'user_id',
+        'membership',//Es unico se crea dinamicamente
         'points',
-        'image',
-        'birthdate',
+        'address',
         'active',
+        'image',
+        'user_id',
         'ids'//Campo enviar notificacion por cliente
     ];
     // Relacion con el usuario

@@ -15,117 +15,79 @@ class UserSeeder extends Seeder
     public function run()
     {
         $user = User::create([
-            'name'          => 'Digital',
-            'first_surname' => 'Soft',
-            'second_surname'=> 'MX',
-            'username'      => 'admin_master',
-            'email'         => 'superadmin@digitalsoft.mx',
+            'name'          => 'Super',
+            'first_surname' => 'Admin',
+            'second_surname'=> 'Master',
+            'email'         => 'adminmaster@digitalsoft.mx',
             'sex'           => 'Hombre',
             'phone'         => '2221919027',
-            'address'       => 'Cerrada',
-            'active'        => 1,
+            'birthday'     => '1994-05-12',
+            'job'           => 'EL ADMIN MASTER',
+            'active'        => 'ACTIVE',
             'password'      => bcrypt('adminmaster1234'),
-            'remember_token'=> NULL,
-            'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([
-            'user_id' => $user->id, 'role_id' => 1
-        ]);
+        DB::table('role_user')->insert(['user_id'=>$user->id,'role_id'=>1]);
         $client = Client::create([
-            'user_id'   => $user->id,
+            'membership'=> 'adminMaster',
             'points'    => 1000,
+            'address'   => 'Cerrada Puebla, Pue.',
+            'active'    => 'ACTIVE',
             'image'     => NULL,
-            'birthdate' => '1994-05-10',
-            'active'    => 0,
-            'ids'       => NULL,
+            'user_id'   => $user->id,
         ]);
-        DB::table('user_client')->insert([
-            'user_id'=>$user->id,'client_id'=>$client->id
-        ]);
+        DB::table('user_client')->insert(['user_id'=>$user->id,'client_id'=>$client->id]);
+
         $user = User::create([
             'name'          => 'Administrador',
-            'first_surname' => 'Eucomb',
-            'second_surname'=>  NULL,
-            'username'      => 'admin_eucomb',
+            'first_surname' => 'Digital',
+            'second_surname'=>  'Mx',
             'email'         => 'admin@digitalsoft.mx',
             'sex'           => 'Mujer',
             'phone'         => '2234123289',
-            'address'       => 'Cerrada',
-            'active'        => 1,
+            'birthday'     => '1994-05-10',
+            'job'           => 'EL ADMINISTRADOR',
+            'active'        => 'ACTIVE',
             'password'      => bcrypt('admin1234'),
-            'remember_token'=> NULL,
-            'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([
-            'user_id' => $user->id, 'role_id' => 2
-        ]);
-        $client = Client::create([
-            'user_id'   => $user->id,
-            'points'    => 1000,
-            'image'     => NULL,
-            'birthdate' => '1994-05-10',
-            'active'    => 0,
-            'ids'       => NULL,
-        ]);
-        DB::table('user_client')->insert([
-            'user_id'=>$user->id,'client_id'=>$client->id
-        ]);
+        DB::table('role_user')->insert(['user_id'=>$user->id,'role_id'=>2]);
+
         $user = User::create([
-            'name'          => 'admin_estacion',
-            'first_surname' => 'estacion',
-            'second_surname'=> 'estacion',
-            'username'      => 'admin_estacion',
-            'email'         => 'estation@digitalsoft.mx',
+            'name'          => 'Admin',
+            'first_surname' => 'Sucursal',
+            'second_surname'=> 'Mx',
+            'email'         => 'sucursal@digitalsoft.mx',
             'sex'           => 'Hombre',
             'phone'         => '2234123289',
-            'address'       => 'Cerrada',
-            'active'        => 1,
+            'birthday'     => '1994-05-10',
+            'job'           => 'EL ADMIN SUCURSAL',
             'password'      => bcrypt('estacion1234'),
             'remember_token'=> NULL,
             'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([
-            'user_id' => $user->id, 'role_id' => 3
-        ]);
-        $client = Client::create([
-            'user_id'   => $user->id,
-            'points'    => 1000,
-            'image'     => NULL,
-            'birthdate' => '1994-05-10',
-            'active'    => 0,
-            'ids'       => NULL,
-        ]);
-        DB::table('user_client')->insert([
-            'user_id'=>$user->id,'client_id'=>$client->id
-        ]);
+        DB::table('role_user')->insert(['user_id'=>$user->id,'role_id'=>3]);
+
         $user = User::create([
-            'name'          => 'enrique',
-            'first_surname' => 'perez',
-            'second_surname'=> 'aguilae',
-            'username'      => 'E21133322',
+            'name'          => 'Enrique',
+            'first_surname' => 'Perez',
+            'second_surname'=> 'Aguilae',
             'email'         => 'usuario@digitalsoft.mx',
             'sex'           => 'Hombre',
             'phone'         => '2225342171',
-            'address'       => 'rivera del atoyac sur 1703',
-            'active'        => 1,
+            'birthday'     => '1994-05-10',
+            'job'           => 'EL ADMIN SUCURSAL',
             'password'      => bcrypt('usuario1234'),
-            'remember_token'=> NULL,
-            'external_id'   => NULL,
         ]);
-        DB::table('role_user')->insert([
-            'user_id' => $user->id, 'role_id' => 4
-        ]);
+        DB::table('role_user')->insert(['user_id'=>$user->id,'role_id'=>4]);
         $client = Client::create([
-            'user_id'   => $user->id,
-            'points'    => 1000,
-            'image'     => NULL,
-            'birthdate' => '1994-05-10',
-            'active'    => 0,
-            'ids'       => NULL,
+            'membership'    => 'E21133322',
+            'points'        => 100,
+            'address'       => 'rivera del atoyac sur 1703',
+            'image'         => NULL,
+            'active'        => 'ACTIVE',
+            'user_id'       => $user->id,
+            'ids'           => NULL,
         ]);
-        DB::table('user_client')->insert([
-            'user_id'=>$user->id,'client_id'=>$client->id
-        ]);
+        DB::table('user_client')->insert(['user_id'=>$user->id,'client_id'=>$client->id]);
         // print_r(json_encode($user));
     }
 

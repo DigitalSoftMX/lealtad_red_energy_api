@@ -33,8 +33,7 @@ class CreateStationsTable extends Migration
             $table->timestamps();
 
             $table->foreign('id_company')->references('id')->on('companies')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

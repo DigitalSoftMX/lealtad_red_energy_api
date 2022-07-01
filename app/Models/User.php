@@ -15,17 +15,17 @@ class User extends Authenticatable implements JWTSubject
 
     protected $fillable = [
         'name',
-        'username',//Es unico se crea dinamicamente
         'first_surname',
         'second_surname',
         'email',
         'sex',
         'phone',
-        'address',
+        'birthday',
+        'job',//Puesto de trabajo
         'active',
+        'external_id',//Login google
         'password',
         'remember_token',
-        'external_id' //Lo de google
     ];
 
     protected $hidden = [

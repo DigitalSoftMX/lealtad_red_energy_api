@@ -20,12 +20,10 @@ class CreateContactsTable extends Migration
             $table->timestamps();
 
             $table->foreign('transmitter_id')->references('id')->on('clients')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
 
             $table->foreign('receiver_id')->references('id')->on('clients')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

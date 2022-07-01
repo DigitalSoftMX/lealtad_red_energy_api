@@ -19,12 +19,10 @@ class CreateSaleClientsTable extends Migration
             $table->unsignedBigInteger('client_id');
 
             $table->foreign('sale_id')->references('id')->on('salesqrs')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('cascade');
 
             $table->foreign('client_id')->references('id')->on('clients')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

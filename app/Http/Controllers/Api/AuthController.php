@@ -8,48 +8,38 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use SimpleXMLElement;
 use Carbon\Carbon;
 use Google_Client;//Google register y login
 use Exception;
-use App\Repositories\ResponsesAndLogout;//
-
-// use App\User;
-use App\Models\Client;
-use App\Models\Company;
-use App\Models\Exchange;
-use App\Models\Station;
-use App\Models\Gasoline;
-use App\Models\History;
-use App\Canje; //Eliminar
-use App\SalesQr;//Eliminar
+use App\Repositories\ResponsesAndLogout;//logout y respuestas
 
 use App\Models\User;
-use App\Role;
+use App\Models\Client;
+use App\Models\Company;
+use App\Models\Station;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
     private $response, $clientGoogle;
 
-    public function __construct(ResponsesAndLogout $response)
+    public function __construct(ResponsesAndLogout $res)
     {
-        $this->response = $response;
+        $this->response = $res;
         $this->clientGoogle = new Google_Client(['client_id' => '358591636304-5sehkr6cb2t13lutk9rb76vjocv9rj0v.apps.googleusercontent.com']);
     }
     // Metodo para inicar sesion
     public function login(Request $request)
     {
+        //Entra por menbresia
         if ($u = User::where('username', $request->email)->first()) {
+            //Existe el email de esta membresia
             if ($u->email) {
                 $user = User::where('email', $u->email)->get();
                 $request->merge(['email' => $u->email]);
             } else {
-                return $this->response
-                    ->errorResponse(
-                        'No existe un correo electrónico registrado. Ingrese un correo electrónico.',
-                        $u->id
-                    );
+                return $this->response->errorResponse('No existe correo electrónico registrado');
             }
         } else {
             $user = User::where('email', $request->email)->get();
@@ -58,12 +48,13 @@ class AuthController extends Controller
             case 0:
                 return $this->response->errorResponse('Lo sentimos, la cuenta no esta registrada.', null);
             case 1:
-
                 if ($user[0]->external_id)
                     return $this->response->errorResponse('Intente iniciar sesión con su cuenta de google');
 
                 foreach ($user->first()->roles as $rol) {
-                    if ($rol->name == 'usuario') {
+                    // roles permitidos a la api
+                    if ($rol->name == 'admin_master' || $rol->name == 'usuario') {
+                        // dd($user[0]);
                         $validator = Validator::make($request->only('email'), ['email' => 'email']);
                         return ($validator->fails()) ?
                             $this->response->errorResponse('Por favor, ingrese un nuevo correo electrónico.',$user[0]->id
@@ -194,9 +185,10 @@ class AuthController extends Controller
     private function getToken($request, $user, $rol)
     {
         if (!$token = JWTAuth::attempt($request->only('email', 'password')))
-            return $this->response->errorResponse('Datos incorrectos', null);
+        return $this->response->errorResponse('Datos incorrectos', null);
 
         $user->update(['remember_token' => $token]);
+        // dd($rol);
 
         if ($rol == 'usuario') {
             //User relacion con cliente no esta vacio llenar
@@ -227,13 +219,13 @@ class AuthController extends Controller
                     $dataSaleQr->created_at = $ticket->created_at;
                     $dataSaleQr->updated_at = $ticket->updated_at;
                     if ($status == 1 || $status == 2) {
-                        $dataSaleQr->gasoline_id = Gasoline::where('name', 'LIKE', '%' . $ticket->producto . '%')->first()->id;
+                        $dataSaleQr->Product_id = Product::where('name', 'LIKE', '%' . $ticket->producto . '%')->first()->id;
                         $dataSaleQr->liters = $ticket->litro;
                         $dataSaleQr->points = $ticket->punto;
                         $dataSaleQr->payment = $ticket->costo;
                     }
                     if ($status == 3 || $status == 4) {
-                        $dataSaleQr->gasoline_id = null;
+                        $dataSaleQr->Product_id = null;
                         $dataSaleQr->liters = 0;
                         $dataSaleQr->points = 0;
                         $dataSaleQr->payment = 0;

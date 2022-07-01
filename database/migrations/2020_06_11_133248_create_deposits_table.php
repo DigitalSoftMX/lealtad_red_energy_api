@@ -23,16 +23,13 @@ class CreateDepositsTable extends Migration
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('clients')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
 
             $table->foreign('station_id')->references('id')->on('stations')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
 
             $table->foreign('status')->references('id')->on('status')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

@@ -15,20 +15,21 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->String('name',50);
-            $table->String('first_surname',50);
-            $table->String('second_surname',50)->nullable();
-            $table->String('username',15)->unique();//menbresia
-            $table->String('email')->unique();
-            $table->String('sex',10)->nullable();
-            $table->String('phone',15)->nullable();
-            $table->String('address',255)->nullable();
-            $table->integer('active')->default(1);
-            $table->String('password',255)->nullable();
-            $table->String('external_id',100)->nullable();
+            $table->string('name',50);
+            $table->string('first_surname',50);
+            $table->string('second_surname',50)->nullable();
+            $table->string('email')->unique();
+            $table->string('sex',10)->nullable();
+            $table->string('phone',15)->nullable();
+            $table->date('birthday')->nullable();
+            $table->string('job')->nullable();
+            $table->enum('active',['ACTIVE','LOCKED'])->default('ACTIVE');
+            $table->string('external_id',100)->nullable();//login google
+            $table->string('password',255)->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
-            // $table->text('remember_token')->nullable();
+
+            // $table->rememberToken();
+            $table->text('remember_token')->nullable();
             $table->timestamps();
         });
     }
