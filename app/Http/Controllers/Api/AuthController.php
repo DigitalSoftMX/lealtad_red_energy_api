@@ -33,11 +33,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         //Entra por menbresia
-        if ($u = User::where('username', $request->email)->first()) {
+        if ($c = Client::where('membership', $request->email)->first()) {
             //Existe el email de esta membresia
-            if ($u->email) {
-                $user = User::where('email', $u->email)->get();
-                $request->merge(['email' => $u->email]);
+            $user = User::where('id',$c->user_id)->get();
+            if ($user[0]->email) {
+                $request->merge(['email' => $user[0]->email]);
+                // return $this->response->successResponse('data',$request->all());
             } else {
                 return $this->response->errorResponse('No existe correo electrónico registrado');
             }
@@ -63,8 +64,8 @@ class AuthController extends Controller
                 }
                 return $this->response->errorResponse('Usuario no autorizado', null);
             default:
-                return $u ?
-                    $this->response->errorResponse('Por favor, ingrese un nuevo correo electrónico.', $u->id) :
+                return $c ?
+                    $this->response->errorResponse('Por favor, ingrese un nuevo correo electrónico.', $c->id) :
                     $this->response->errorResponse('Intente ingresar con su membresía.', null);
         }
     }
@@ -76,7 +77,7 @@ class AuthController extends Controller
             $user = User::where('external_id', $userGoogle['sub'])->first();
 
             if ($user) {
-                $request->merge(['email' => $user->email, 'password' => $user->username]);
+                $request->merge(['email' => $user->email, 'password' => $user->membership]);
                 return $this->getToken($request, $user, 'usuario');
             }
 
@@ -97,12 +98,12 @@ class AuthController extends Controller
                 // Membresia aleatoria no repetible
                 while (true) {
                     $membership = 'E' . substr(Carbon::now()->format('Y'), 2) . rand(100000, 999999);
-                    if (!(User::where('username', $membership)->exists()))
+                    if (!(Client::where('membership', $membership)->exists()))
                         break;
                 }
 
                 $request->merge([
-                    'username' => $membership, 'external_id' => $userGoogle['sub'],
+                    'external_id' => $userGoogle['sub'],
                     'email' => $userGoogle['email'], 'name' => $userGoogle['given_name'],
                     'first_surname' => $userGoogle['family_name'], 'password' => bcrypt($membership)
                 ]);
@@ -111,7 +112,7 @@ class AuthController extends Controller
                 $request->merge(['user_id' => $user->id, 'points' => Company::find(1)->points, 'image' => $membership]);
                 Client::create($request->all());
                 $user->roles()->attach('5');
-                Storage::disk('public')->deleteDirectory($user->username);
+                Storage::disk('public')->deleteDirectory($user->membership);
                 $request->merge(['password' => $membership]);
                 return $this->getToken($request, $user, 'usuario');
             }
@@ -136,22 +137,22 @@ class AuthController extends Controller
         // ****CONSERVAR****// Membresia aleatoria no repetible
         while (true) {
             $membership = 'E' . substr(Carbon::now()->format('Y'), 2) . rand(100000, 999999);
-            if (!(User::where('username', $membership)->exists()))
+            if (!(Client::where('membership', $membership)->exists()))
                 break;
         }
-        //Crear Usuario con username menbresia y encriptar password
-        $request->merge(['username' => $membership, 'password' => bcrypt($request->password)]);
+        //Crear Usuario y encriptar password
+        $request->merge(['password' => bcrypt($request->password)]);
         error_log('Crea user');
         $user = User::create($request->all());
         if ($user) {
             //Obtener id role ya que no es 5 siempre
             $role = Role::where('name','=','usuario')->first();
             $user->roles()->attach($role->id);//Asignar role 5 al usuario
-            //Creacion del cliente
-            $request->merge(['user_id' => $user->id, 'points' => Company::find(1)->points, 'image' => $membership]);
+            //Creacion del cliente con menbresia
+            $request->merge(['membership' => $membership, 'user_id' => $user->id, 'points' => Company::find(1)->points, 'image' => $membership]);
             Client::create($request->all());
         }
-        // Storage::disk('public')->deleteDirectory($user->username);
+        // Storage::disk('public')->Client($user->membership);
         $request->merge(['password' => $request->password]);//Pasar el password sin encriptar
         return $this->getToken($request, $user, 'usuario');
     }
@@ -196,7 +197,7 @@ class AuthController extends Controller
                 $request->merge([
                     'user_id' => $user->id,
                     'points' => 0,
-                    'image' => $user->username,
+                    'image' => $user->membership,
                     'acive' => 0
                 ]);
                 $user->client = Client::create($request->except('ids'));
