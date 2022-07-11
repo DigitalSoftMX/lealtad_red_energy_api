@@ -32,10 +32,10 @@ Route::group(['middleware' => 'jwtAuth'], function () {
     Route::post('points', 'Api\BalanceController@addPoints');
     Route::post('exchange', 'Api\BalanceController@exchange');
     //Rutas para contactos
-    Route::get('balance/contact/getlist', 'Api\ContactController@getListContacts');
-    Route::get('balance/contact', 'Api\ContactController@lookingForContact');
-    Route::post('balance/contact/add', 'Api\ContactController@addContact');
-    Route::post('balance/contact/delete', 'Api\ContactController@deleteContact');
+    // Route::get('balance/contact/getlist', 'Api\ContactController@getListContacts');
+    // Route::get('balance/contact', 'Api\ContactController@lookingForContact');
+    // Route::post('balance/contact/add', 'Api\ContactController@addContact');
+    // Route::post('balance/contact/delete', 'Api\ContactController@deleteContact');
 });
 // Rutal para el usuario con rol despachador
 /* Route::group(['middleware' => 'jwtAuth'], function () {

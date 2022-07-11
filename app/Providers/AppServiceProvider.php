@@ -39,12 +39,12 @@ class AppServiceProvider extends ServiceProvider
             if(Auth::check()) {
                 $user_rol = Auth::user();
                 $roles = DB::table('menu_role')->where('role_id', $user_rol->roles[0]->id)->get();
-                
+
                 foreach ($roles as $rol) {
                     $menus = DB::table('menus')->where('id', $rol->menu_id)->get();
-                    array_push($datos, $menus);   
-                }         
-                
+                    array_push($datos, $menus);
+                }
+
                 $view->with('menus', $datos);
 
             } else {

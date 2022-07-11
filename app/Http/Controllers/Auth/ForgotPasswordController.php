@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
@@ -20,13 +19,4 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
-    protected function sendResetLinkResponse($response)
-    {
-        return response()->json(['ok' => true, 'message' => 'Se ha enviado un enlace a su correo electrónico para restablecer su contraseña']);
-    }
-
-    protected function sendResetLinkFailedResponse(Request $request, $response)
-    {
-        return response()->json(['ok' => false, 'message' => 'No se pudo enviar el enlace, el correo electrónico no es válido o no existe la cuenta']);
-    }
 }

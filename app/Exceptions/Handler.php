@@ -47,6 +47,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        //error 419 entra pagina expirada
+        // if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+        //     $message = 'La Pagina ha expirado.';
+        //     $status  = 419;
+        //     return response()->view('errors.errors',['message' => $message,'status'=>$status]);
+        // }
+        //Erro 504 no existe la ruta
+        // if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        //     $message = 'La pagina no fue encontrada o no existe.';
+        //     $status  = 504;
+        //     return response()->view('errors.errors',['message' => $message,'status'=>$status]);
+        // }
         return parent::render($request, $exception);
     }
+
 }
